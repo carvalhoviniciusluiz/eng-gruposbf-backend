@@ -3,6 +3,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CacheService } from '~/config';
 import { RootModule } from '~/root/root.module';
 import { BcbModule } from './bcb/bcb.module';
+import { ConverterModule } from './converter/converter.module';
 
 @Module({
   imports: [
@@ -10,7 +11,8 @@ import { BcbModule } from './bcb/bcb.module';
       useClass: CacheService
     }),
     RootModule,
-    BcbModule
+    BcbModule,
+    ConverterModule
   ],
   providers: [
     {

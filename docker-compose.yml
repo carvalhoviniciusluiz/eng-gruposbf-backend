@@ -1,0 +1,22 @@
+version: '3.8'
+
+networks:
+  app-network:
+    driver: bridge
+
+services:
+  api:
+    container_name: api
+    build:
+      context: .
+    tty: true
+    env_file:
+      - .env
+    volumes:
+      - ./:/nest
+    ports:
+      - 3333:3333
+      - 9229:9229
+    networks:
+      - app-network
+    command: yarn start:debug:docker

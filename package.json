@@ -1,0 +1,117 @@
+{
+  "name": "eng-gruposbf-backend",
+  "version": "0.0.1",
+  "description": "This is our API",
+  "author": "Carvalho, Vinicius Luiz <carvalho.viniciusluiz@gmail.com>",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "npx @nestjs/cli build",
+    "build:compile": "tsc -p tsconfig.build.json",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:debug:docker": "nest start --debug='0.0.0.0:9229'",
+    "start:prod": "node dist/main",
+    "lint": "eslint \"{src,test}/**/*.ts\" --fix",
+    "test": "jest --maxWorkers=1 --detectOpenHandles",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:staged": "yarn test --bail --findRelatedTests",
+    "test:e2e": "jest --config ./test/jest-e2e.json --detectOpenHandles",
+    "jest:clear": "jest --clearCache",
+    "update:packages": "yarn ncu -u"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "concurrently -r \"yarn format\" \"yarn lint\" \"yarn test:staged\" \"yarn tsc --noEmit\"",
+      "post-merge": "yarn",
+      "pre-push": "yarn test:ci"
+    }
+  },
+  "dependencies": {
+    "@nestjs/common": "^8.3.1",
+    "@nestjs/config": "^1.2.0",
+    "@nestjs/core": "^8.3.1",
+    "@nestjs/platform-express": "^8.3.1",
+    "@nestjs/swagger": "^5.2.0",
+    "build": "^0.1.4",
+    "cache-manager": "^3.6.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.13.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express-rate-limit": "^6.3.0",
+    "helmet": "^5.0.2",
+    "nest": "^0.1.6",
+    "reflect-metadata": "^0.1.13",
+    "rimraf": "^3.0.2",
+    "rxjs": "^7.5.4",
+    "swagger-ui-express": "^4.3.0",
+    "typescript": "^4.5.5"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^8.2.1",
+    "@nestjs/schematics": "^8.0.6",
+    "@nestjs/testing": "^8.3.1",
+    "@types/cache-manager": "^3.4.2",
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/express-rate-limit": "^5.1.3",
+    "@types/jest": "^27.4.0",
+    "@types/node": "^17.0.18",
+    "@types/supertest": "^2.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "@typescript-eslint/parser": "^5.12.0",
+    "concurrently": "^7.0.0",
+    "eslint": "^8.9.0",
+    "eslint-config-prettier": "^8.4.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-import-helpers": "^1.2.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^7.0.4",
+    "jest": "^27.5.1",
+    "jest-extended": "^2.0.0",
+    "npm-check-updates": "^12.3.1",
+    "prettier": "^2.5.1",
+    "supertest": "^6.2.2",
+    "ts-jest": "^27.1.3",
+    "ts-loader": "^9.2.6",
+    "ts-node": "^10.5.0",
+    "tsconfig-paths": "^3.12.0"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "setupFilesAfterEnv": [
+      "jest-extended"
+    ],
+    "collectCoverage": true,
+    "maxConcurrency": 1,
+    "collectCoverageFrom": [
+      "**/*.(t|j)s",
+      "!**/*.d.ts",
+      "!<rootDir>/*.ts",
+      "!<rootDir>/**/index.ts",
+      "!<rootDir>/**/*.module.ts",
+      "!<rootDir>/config/**/*"
+    ],
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "~/(.*)": "<rootDir>/$1"
+    }
+  }
+}

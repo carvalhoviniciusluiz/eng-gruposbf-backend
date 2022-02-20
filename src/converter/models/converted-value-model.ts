@@ -9,14 +9,14 @@ export class ConvertedValueModel {
   currency: string;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     description: 'Currency code',
     example: 860
   })
   code: number;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     description: 'Converted value',
     example: 0.3438
   })

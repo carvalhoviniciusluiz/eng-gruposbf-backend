@@ -4,3 +4,7 @@ export enum Locale {
   EUR = 978,
   INR = 860
 }
+
+export const getEnumByValue = (value: Locale) => {
+  return Locale[value];
+};

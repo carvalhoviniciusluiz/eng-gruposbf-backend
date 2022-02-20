@@ -1,9 +1,12 @@
 import { HttpModule } from '@nestjs/axios';
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { AppLogger } from '~/app.logger';
 import { BcbModule } from '~/bcb/bcb.module';
+import { BcbApiException } from '~/bcb/exceptions';
+import { ConverterController } from '~/converter/converter.controller';
 import { ConverterService } from '~/converter/converter.service';
 import { ConverterParams, ConverterResponse } from '~/converter/types';
-import { ConverterController } from './converter.controller';
 
 const mockRequestValue: ConverterParams = {
   value: 5
@@ -35,16 +38,19 @@ const mockResolvedValue: ConverterResponse = {
 describe('ConverterController', () => {
   let controller: ConverterController;
   let service: ConverterService;
+  let logger: AppLogger;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [HttpModule, BcbModule],
       controllers: [ConverterController],
-      providers: [ConverterService]
+      providers: [ConverterService, AppLogger]
     }).compile();
 
     controller = module.get<ConverterController>(ConverterController);
     service = module.get<ConverterService>(ConverterService);
+    logger = module.get<AppLogger>(AppLogger);
+    logger.print = jest.fn();
   });
 
   const makeSut = async (params = mockRequestValue, result = mockResolvedValue) => {
@@ -54,6 +60,12 @@ describe('ConverterController', () => {
       response
     };
   };
+
+  it('should throw BadRequestException', async () => {
+    jest.spyOn(service, 'converter').mockImplementationOnce(() => Promise.reject(new BcbApiException()));
+    const promise = makeSut();
+    expect(promise).rejects.toThrow(BadRequestException);
+  });
 
   it('should return list with values', async () => {
     const { response } = await makeSut({

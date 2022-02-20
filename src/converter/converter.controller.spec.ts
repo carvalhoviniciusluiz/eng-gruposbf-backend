@@ -1,4 +1,6 @@
+import { HttpModule } from '@nestjs/axios';
 import { Test, TestingModule } from '@nestjs/testing';
+import { BcbModule } from '~/bcb/bcb.module';
 import { ConverterService } from '~/converter/converter.service';
 import { ConverterParams, ConverterResponse } from '~/converter/types';
 import { ConverterController } from './converter.controller';
@@ -36,6 +38,7 @@ describe('ConverterController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [HttpModule, BcbModule],
       controllers: [ConverterController],
       providers: [ConverterService]
     }).compile();

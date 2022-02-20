@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios';
 import { Observable, of, throwError } from 'rxjs';
 import { Locale } from '~/bcb/enums';
 import { BcbApiException } from '~/bcb/exceptions';
-import { BcbHttpResponse } from '~/bcb/types';
+import { ConversionResponse } from '~/bcb/types';
 import { BcbService } from './bcb.service';
 
 jest.mock('@nestjs/axios');
@@ -23,7 +23,7 @@ const mockedConversionParams = {
 };
 
 type PriceSutTypes = {
-  httpResponse: Observable<BcbHttpResponse>;
+  httpResponse: Observable<ConversionResponse>;
 };
 
 describe('BcbService', () => {
@@ -79,7 +79,7 @@ describe('BcbService', () => {
   it('should return an zero value', async () => {
     const { httpResponse } = await makeSut();
     httpResponse.subscribe(response => {
-      expect(response.conversionValue).toBe(0);
+      expect(response.price).toBe(0);
     });
   });
 
@@ -89,7 +89,7 @@ describe('BcbService', () => {
     };
     const { httpResponse } = await makeSut();
     httpResponse.subscribe(response => {
-      expect(response.conversionValue).toBe(mockedAxiosResult.data.value);
+      expect(response.price).toBe(mockedAxiosResult.data.value);
     });
   });
 });

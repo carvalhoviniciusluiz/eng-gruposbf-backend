@@ -1,6 +1,8 @@
 # Eng-Gruposbf-Backend
 Este projeto está arquitetado em cima do framework **Nestjs**, [leia a documentação](https://docs.nestjs.com/) para mais detalhes.
 
+__IMPORTANTE__ o projeto possui uma demo publicada no heroku, o primeiro acesso pode demorar uns 30s por ser respondido por se tratar de conta gratuita. Você pode [clicar aqui](https://eng-gruposbf-backend.herokuapp.com/) para acessar o serviço publicado.
+
 - Conteúdo
     - [Configuração e Execução](#config)
         - [Variáveis de Ambiente](#variaveis_ambiente)
@@ -12,6 +14,7 @@ Este projeto está arquitetado em cima do framework **Nestjs**, [leia a document
     - [Scripts Disponíveis](#scripts)
     - [Linguagem e Padrão de Código](#coding)
     - [Tests automatizados](#tests)
+        - [Cobertura de código](#coverage)
     - [Detalhes Técnicos](#detalhes_tecnicos)
         - [Regra de dependência](#dependencias)
     - [Outros Links](#outros-links)
@@ -30,6 +33,8 @@ APP_PORT: Define a porta de acesso ao serviço.
 APP_VERSION: Define a versão atual do projeto.
 APP_VERSION_PREFIX: Define o prefixo da versão, default ``v``.
 APP_CONTAINER_NAME: Define o nome do container que será gerado pelo docker.
+APP_BACKEND_API_URL_PROD: Define a URL da api do backend em produção.
+CONVERSION_API_URL_BCB: Define a URL da api de conversão entre moedas.
 ```
 
 ### Docker :whale: <a name="docker"></a>
@@ -184,6 +189,15 @@ Serviço rodando no **container docker** usar a opção:
 ```bash
 Docker: Debug Server
 ```
+
+### Cobertura de código <a name="coverage"></a>
+
+O projeto encontra-se com 100% de cobertura no entando, somente os tests mais relevantes que permitam atingir todas as linhas do projeto foram implementados.
+
+Rorando o comando de terminal `yarn test:ci` é possível se observar o seguindo relatório de cobertura:
+
+<img src="https://user-images.githubusercontent.com/22005684/154951809-df6cb15b-197f-40ef-b942-cf996ccd0157.png">
+
 -------------------
 ## Detalhes Técnicos <a name="detalhes_tecnicos"></a>
 ### Gerência de Dependências <a name="dependencias"></a>

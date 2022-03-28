@@ -1,1 +1,1 @@
-export * from './bcb-api.exception';
+export * from './bcb-api-unexpected-error.exception';

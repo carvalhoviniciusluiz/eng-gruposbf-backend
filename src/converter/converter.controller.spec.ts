@@ -3,8 +3,9 @@ import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppLogger } from '~/app.logger';
 import { BcbModule } from '~/bcb/bcb.module';
-import { BcbApiException } from '~/bcb/exceptions';
+import { BcbApiUnexpectedError } from '~/bcb/exceptions';
 import { ConverterController } from '~/converter/converter.controller';
+import { ConverterModule } from '~/converter/converter.module';
 import { ConverterService } from '~/converter/converter.service';
 import { ConverterParams, ConverterResponse } from '~/converter/types';
 
@@ -42,9 +43,7 @@ describe('ConverterController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [HttpModule, BcbModule],
-      controllers: [ConverterController],
-      providers: [ConverterService, AppLogger]
+      imports: [HttpModule, BcbModule, ConverterModule]
     }).compile();
 
     controller = module.get<ConverterController>(ConverterController);
@@ -62,7 +61,7 @@ describe('ConverterController', () => {
   };
 
   it('should throw BadRequestException', async () => {
-    jest.spyOn(service, 'converter').mockImplementationOnce(() => Promise.reject(new BcbApiException()));
+    jest.spyOn(service, 'converter').mockImplementationOnce(() => Promise.reject(new BcbApiUnexpectedError()));
     const promise = makeSut();
     expect(promise).rejects.toThrow(BadRequestException);
   });

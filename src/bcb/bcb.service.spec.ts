@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AxiosResponse } from 'axios';
 import { Observable, of, throwError } from 'rxjs';
 import { Locale } from '~/bcb/enums';
-import { BcbApiException } from '~/bcb/exceptions';
+import { BcbApiUnexpectedError } from '~/bcb/exceptions';
 import { ConversionResponse } from '~/bcb/types';
 import { BcbService } from './bcb.service';
 
@@ -65,13 +65,12 @@ describe('BcbService', () => {
     });
   });
 
-  it('should throw BcbApiException', async () => {
+  it('should throw BcbApiUnexpectedError', async () => {
     jest.spyOn(httpService, 'get').mockImplementationOnce(() => throwError(() => new Error()));
     const { httpResponse } = await makeSut();
     httpResponse.subscribe({
       error: err => {
-        expect(err.message).toEqual('BCB_API_EXCEPTION');
-        expect(err).toBeInstanceOf(BcbApiException);
+        expect(err).toBeInstanceOf(BcbApiUnexpectedError);
       }
     });
   });

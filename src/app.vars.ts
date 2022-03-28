@@ -16,3 +16,6 @@ export const IS_TEST = NODE_ENV === 'test';
 export const IS_DEV = !IS_TEST && !IS_PROD;
 
 export const CONVERSION_API_URL_BCB = configService.get<string>('CONVERSION_API_URL_BCB');
+
+export const CACHE_TIME_TO_LIVE = configService.get<number>('CACHE_TIME_TO_LIVE') || 5;
+export const CACHE_MAX_NUMBER = configService.get<number>('CACHE_MAX_NUMBER') || 10;

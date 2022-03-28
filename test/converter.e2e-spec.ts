@@ -1,6 +1,5 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { of } from 'rxjs';
 import request from 'supertest';
 import { BcbModule } from '~/bcb/bcb.module';
 import { BcbService } from '~/bcb/bcb.service';
@@ -9,24 +8,6 @@ import { ConverterService } from '~/converter/converter.service';
 
 type SutTypes = {
   server: request.SuperTest<request.Test>;
-};
-
-const httpResponse1 = {
-  currency: '999',
-  code: 999,
-  price: 999
-};
-
-const httpResponse2 = {
-  currency: '888',
-  code: 888,
-  price: 888
-};
-
-const httpResponse3 = {
-  currency: '777',
-  code: 777,
-  price: 777
 };
 
 describe('ConverterController (e2e)', () => {
@@ -59,9 +40,6 @@ describe('ConverterController (e2e)', () => {
   });
 
   const makeSut = (): SutTypes => {
-    jest.spyOn(service, 'convertValue').mockResolvedValueOnce(of(httpResponse1));
-    jest.spyOn(service, 'convertValue').mockResolvedValueOnce(of(httpResponse2));
-    jest.spyOn(service, 'convertValue').mockResolvedValueOnce(of(httpResponse3));
     const server = request(app.getHttpServer());
     return {
       server
@@ -70,15 +48,25 @@ describe('ConverterController (e2e)', () => {
 
   it('should return a list with correct conversions', async () => {
     const { server } = makeSut();
+
+    const httpResponse = {
+      value: '1',
+      valueCalculation: 1,
+      quotationDate: '2022-02-18',
+      conversions: [
+        { currency: 'USD', code: 220, price: 5.1333 },
+        { currency: 'EUR', code: 978, price: 5.8217 },
+        { currency: 'INR', code: 860, price: 0.06875 }
+      ]
+    };
+
     await server
       .get('/converter')
       .query({
         value: 1
       })
       .expect(({ body }) => {
-        expect(body.conversions[0]).toEqual(httpResponse1);
-        expect(body.conversions[1]).toEqual(httpResponse2);
-        expect(body.conversions[2]).toEqual(httpResponse3);
+        expect(body).toEqual(httpResponse);
       });
   });
 

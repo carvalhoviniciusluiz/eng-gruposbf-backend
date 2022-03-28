@@ -1,117 +1,53 @@
 # Eng-Gruposbf-Backend
-Este projeto está arquitetado em cima do framework **Nestjs**, [leia a documentação](https://docs.nestjs.com/) para mais detalhes.
+Este projeto está arquitetado no framework **Nestjs**, [leia a documentação](https://docs.nestjs.com/) para mais detalhes ou veja o resumo existente na sessão `Configurações > Nestjs`.
 
-__IMPORTANTE__ o projeto possui uma demo publicada no heroku, o primeiro acesso pode demorar uns 30s por ser respondido por se tratar de conta gratuita. Você pode [clicar aqui](https://eng-gruposbf-backend.herokuapp.com/) para acessar o serviço publicado.
+__IMPORTANTE__ existe uma demo publicada no heroku [clicar aqui](https://eng-gruposbf-backend.herokuapp.com/), o primeiro acesso pode levar até 30s para ser estabelecido devido a conta ser gratuita.
 
 - Conteúdo
-    - [Configuração e Execução](#config)
-        - [Variáveis de Ambiente](#variaveis_ambiente)
-        - [Docker](#docker)
-        - [Docker Run](#docker_run)
-        - [Makefile](#makefile)
-        - [Padrão de codificação](#padrao_codificacao)
-    - [Introdução](#intro)
-    - [Scripts Disponíveis](#scripts)
-    - [Linguagem e Padrão de Código](#coding)
-    - [Tests automatizados](#tests)
-        - [Cobertura de código](#coverage)
-    - [Detalhes Técnicos](#detalhes_tecnicos)
-        - [Regra de dependência](#dependencias)
-    - [Outros Links](#outros-links)
+    - [Configurações](#configs)
+        - Dotenv
+        - Scripts
+        - Docker
+        - Tests automatizados
+        - Typescript
+        - VSCode
+        - Nestjs
+    - [Sobre o projeto](#about)
+        - [Requisitos](#requirements)
+        - [Instalação](#install)
+        - [Tests](#tests)
+        - [Rodando o Projeto](#run)
+        - [Test API](#api)
 
-## Configuração e Execução <a name="config"></a>
-### Variáveis de Ambiente <a name="variaveis_ambiente"></a>
-O projeto depende de um arquivo `.env` que deve estar na raiz. Para permitir a flexibilidade e ajuste das variáveis de ambiente em cada máquina. Este arquivo não é versionado apesar do arquivo `.env.example` ser.
+## Configurações <a name="configs"></a>
 
-Certifique-se que possui um `.env` na raiz do projeto antes de executá-lo, caso contrário, os valores padrões configurados a partir do arquivo `src/app.vars.ts` serão carregados.
+<details>
+  <summary><b>Dotenv</b> (click to show)</summary>
 
-```sh
-# Públicas
-NODE_ENV: Define o ambiente de execução. Recebe "Production" ou "Development". Controla funcionalidades da aplicação.
+O projeto depende do arquivo `.env` que deve existir na pasta raiz. Este arquivo não é versionado apesar do arquivo `.env.example` ser.
 
-APP_PORT: Define a porta de acesso ao serviço.
-APP_VERSION: Define a versão atual do projeto.
-APP_VERSION_PREFIX: Define o prefixo da versão, default ``v``.
-APP_CONTAINER_NAME: Define o nome do container que será gerado pelo docker.
-APP_BACKEND_API_URL_PROD: Define a URL da api do backend em produção.
-CONVERSION_API_URL_BCB: Define a URL da api de conversão entre moedas.
-```
+Certifique-se de possuir um `.env` na raiz do projeto antes de executá-lo para que as constantes em `src/app.vars.ts` sejam carregadas.
 
-### Docker :whale: <a name="docker"></a>
-Um `Dockerfile` está presente na raiz do projeto, assim como um `docker-compose.yml` com uma configuração mínima viável para a execução do projeto.
+__DETALHAMENTO__
 
-No `docker-compose.yml` também há referência para uma rede interna que permitará conectar diversos container de serviços que venham a existir no projeto.
+| Variável | Descrição |
+| ------ | ------ |
+| NODE_ENV | Define o ambiente de execução. Recebe "Production" ou "Development". Controla funcionalidades da aplicação.
+| APP_PORT | Define a porta de acesso ao serviço.
+| APP_VERSION | Define a versão atual do projeto.
+| APP_VERSION_PREFIX | Define o prefixo da versão, default ``v``.
+| APP_CONTAINER_NAME | Define o nome do container que será gerado pelo docker.
+| APP_BACKEND_API_URL_PROD | Define a URL da api do backend em produção.
+| CONVERSION_API_URL_BCB | Define a URL da api de conversão entre moedas.
 
-### Docker Run <a name="docker_run"></a>
-Em uma máquina com **Docker** e **Docker Compose** instalados, basta configurar seu arquivo `.env` e executar
-```bash
-docker-compose up # Comando travará o terminal
-# ou
-docker-compose up -d # Comando executará em segundo plano
-```
-para iniciar a aplicação.
+</details>
 
-A execução de testes e demais comandos listados em [Scripts](#scripts) pode ser feita a partir de uma nova sessão dentro do container
-```bash
-docker-compose exec api /bin/bash # Inicia uma sessão dentro de um container já em execução
-# ou
-docker-compose run --rm api /bin/bash # Cria um container novo e inicia uma sessão
-```
-### Makefile <a name="makefile"></a>
-Um `Makefile` está presente na raiz do projeto, o intuito é facilitar a execução dos comandos `Docker` executados a partir de um terminal de comandos
-```bash
-make start # Inicia o servidor do nestjs em modo debug
-```
-```bash
-make bash # Abre o terminal interativo do container em execução
-```
+<details>
+  <summary><b>Scripts</b> (click to show)</summary>
 
-### Padrão de codificação <a name="padrao_codificacao"></a>
-O projeto trabalha com aspas simples nas strings e ponto-e-virgula para definir o final de cada linha conforme o [padrão airbnb](https://airbnb.io/javascript/), entretanto, toda essa formatação é feita pelo prettier sempre que um arquivo é salvo.
-```js
-// .vscode/settings.json
-{
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[yaml]": {
-    "editor.defaultFormatter": "redhat.vscode-yaml"
-  },
-}
-```
-O projeto também conta com suportar para alias-path, a raiz `./` está configurada para o alias `~/` conforme definição
-```js
-// tsconfig.json
-{
-  "compilerOptions": {
-  ...
-    "paths": {
-      "~/*": ["*"]
-    },
-  ...
-  }
-}
-```
-Para facilitar, novamente, o prettier está preparado para fornecer os imports de cada recurso nessa mesma formatação, i.e., `import { RootService } from '~/root/root.service';` conforme definição
+O projeto conta com diversos scripts de linha de comando para uso via terminal, i.e., `yarn <SCRIPT>` ou `npm run <SCRIPT>`
 
-```js
-// .vscode/settings.json
-{
-  "typescript.preferences.importModuleSpecifier": "non-relative",
-}
-```
-Configuração específica para o ambiente em Windows
-```js
-{
-  "files.eol": "\n",
-  "editor.tabSize": 2
-}
-```
--------------------
-## Scripts <a name="scripts"></a>
-Uma vez o projeto instalado os seguintes scripts estarão disponiveis para serem usados, i.e., `yarn run <SCRIPT>`
+__DETALHAMENTO__
 
 | Script | Descrição |
 | ------ | ------ |
@@ -133,28 +69,48 @@ Uma vez o projeto instalado os seguintes scripts estarão disponiveis para serem
 | test:e2e | Executa todos os testes de integração |
 | test:clear | Limpa o cache de arquivos do jest |
 | update:packages | Inicia uma varredura para verificar bibliotecas do sistema que estejam desatualizadas |
+</details>
+
+<details>
+  <summary><b>Docker :whale:</b> (click to show)</summary>
+
+Um `Dockerfile` está presente na raiz do projeto, assim como um `docker-compose.yml` com uma configuração mínima viável para a execução do mesmo.
+
+No `docker-compose.yml` há referência para uma rede interna que permitará conectar diversos container de serviços que venham a existir no projeto.
+
+### Docker Run
+Em uma máquina com **Docker** e **Docker Compose** instalados, basta configurar seu arquivo `.env` e executar
+```bash
+docker-compose up # Comando travará o terminal
+# ou
+docker-compose up -d # Comando executará em segundo plano
+```
+para iniciar a aplicação.
+
+A execução de testes e demais comandos listados na sessão `Scripts` pode ser feita a partir de uma nova sessão dentro do container
+```bash
+docker-compose exec api /bin/bash # Inicia uma sessão dentro de um container já em execução
+# ou
+docker-compose run --rm api /bin/bash # Cria um container novo e inicia uma sessão
+```
+
+__IMPORTANTE__
 
 O comando padrão do container de desenvolvimento definido no `docker-compose.yml` é o `start:debug:docker` que já irá levantar o serviço em modo de debug caso haja necessidade desse suporte.
 
-Tenha em vista que o container também possui o [Nest CLI](https://docs.nestjs.com/cli/overview) habilitado globalmente. Isso permite a utilização de [comandos para geração](https://docs.nestjs.com/cli/usages) de diversos recursos.
-> Por padrão, todo o código-fonte é formatado ao salvar seguindo o padrão configurado no arquivo eslintrc.js.
+### Makefile
+Um `Makefile` está presente na raiz do projeto, o intuito é facilitar a execução dos comandos `Docker` executados a partir de um terminal de comandos
+```bash
+make start # Inicia o servidor do nestjs em modo debug
+```
+```bash
+make bash # Abre o terminal interativo do container em execução
+```
+</details>
 
--------------------
-## Linguagem e Padrão de Código <a name="coding"></a>
-Esta arquitetura utiliza [**Typescript**](https://www.typescriptlang.org/) como linguagem de codificação. Todas as features disponíveis pelo framework estão em Typescript e são altamente extensiveis, o que torna todo o código produzido super flexível para o desenvolvimento de softwares.
+<details>
+  <summary><b>Tests Automatizados <a name="tests"></a></b> (click to show)</summary>
 
-Apesar de adicionar uma estrutura diferente há sintaxe do javascript e que muitos programadores poderão não estar habitualidos a usar, TS trás vários benefícios a codificação:
-- Suporte [intellisense](https://code.visualstudio.com/docs/editor/intellisense) para prover auto-completo, informações de parametros, informações rápidas, lista de membros, etc., tudo a nível de IDEs de código-fonte.
-- Melhor tooling para debug do desenvolvedor, fazendo verificações de erros e garantias de tipagens ao codificar.
-- Adição de suporte para design patterns como Abstract, Factories, Decorators, Singles, etc., para facilitar a gerência das dependências de forma padronizada e reutilizável.
-- Fornece um código mais confiável e explícito, menos sucetível a erros durante a programação.
-- Entre outros.
-
-O projeto já possui um linter e o prettier configurados para garantir boa parte da formatação desejada no padrão de código definido. Arquivos de configuração `.prettierrc` e `.eslintrc.js` explicitam as configurações que dentre as poucas decisões definem: **utilização obrigatória de aspas SIMPLES** e a **não-utilização de ponto e vírgula**.
-
-Um arquivo `.editorconfig` também dita as configurações acerca da formatação de arquivos: **identação com 2 espaços**, com **codificação em UTF-8** e com **linha em branco ao final dos arquivos**.
-
-## Tests Automatizados <a name="tests"></a>
 Com exceção dos tests de integração, os demais tests são executados em uma instancia do jest configurada via `package.json`. O jest está preparado para entender todos os alias-path existentes no projeto
 ```json
 "jest": {
@@ -189,18 +145,81 @@ Serviço rodando no **container docker** usar a opção:
 ```bash
 Docker: Debug Server
 ```
+</details>
 
-### Cobertura de código <a name="coverage"></a>
+<details>
+  <summary><b>Typescript</b> (click to show)</summary>
 
-O projeto encontra-se com 100% de cobertura no entando, somente os tests mais relevantes que permitam atingir todas as linhas do projeto foram implementados.
+Esta arquitetura utiliza [**Typescript**](https://www.typescriptlang.org/) como linguagem de codificação. Todas as features disponíveis pelo framework estão em Typescript e são altamente extensiveis, o que torna todo o código produzido super flexível para o desenvolvimento de softwares.
 
-Rorando o comando de terminal `yarn test:ci` é possível se observar o seguindo relatório de cobertura:
+Apesar de adicionar uma estrutura diferente há sintaxe do javascript e que muitos programadores poderão não estar habitualidos a usar, TS trás vários benefícios a codificação:
+- Suporte [intellisense](https://code.visualstudio.com/docs/editor/intellisense) para prover auto-completo, informações de parametros, informações rápidas, lista de membros, etc., tudo a nível de IDEs de código-fonte.
+- Melhor tooling para debug do desenvolvedor, fazendo verificações de erros e garantias de tipagens ao codificar.
+- Adição de suporte para design patterns como Abstract, Factories, Decorators, Singles, etc., para facilitar a gerência das dependências de forma padronizada e reutilizável.
+- Fornece um código mais confiável e explícito, menos sucetível a erros durante a programação.
+- Entre outros.
 
-<img src="https://user-images.githubusercontent.com/22005684/154951809-df6cb15b-197f-40ef-b942-cf996ccd0157.png">
+O projeto já possui um linter e o prettier configurados para garantir boa parte da formatação desejada no padrão de código definido. Arquivos de configuração `.prettierrc` e `.eslintrc.js` explicitam as configurações que dentre as poucas decisões definem: **utilização obrigatória de aspas SIMPLES** e a **não-utilização de ponto e vírgula**.
 
--------------------
-## Detalhes Técnicos <a name="detalhes_tecnicos"></a>
-### Gerência de Dependências <a name="dependencias"></a>
+Um arquivo `.editorconfig` também dita as configurações acerca da formatação de arquivos: **identação com 2 espaços**, com **codificação em UTF-8** e com **linha em branco ao final dos arquivos**.
+</details>
+
+<details>
+  <summary><b>VSCode</b> (click to show)</summary>
+
+O projeto trabalha com aspas simples nas strings e ponto-e-virgula para definir o final de cada linha conforme o [padrão airbnb](https://airbnb.io/javascript/), entretanto, toda essa formatação é feita pelo prettier sempre que um arquivo é salvo.
+```js
+// .vscode/settings.json
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true,
+    "source.organizeImports": true
+  },
+}
+```
+__IMPORTANTE__
+
+O projeto conta com suportar alias-path, a raiz `./` está configurada para `~/` conforme definição
+```js
+// tsconfig.json
+{
+  "compilerOptions": {
+  ...
+    "paths": {
+      "~/*": ["*"]
+    },
+  ...
+  }
+}
+```
+O prettier está preparado para fornecer os imports de cada recurso obedecendo alias-path, i.e., `import { RootService } from '~/root/root.service';` conforme definição
+```js
+// .vscode/settings.json
+{
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+}
+```
+__IMPORTANTE__
+
+Específico para ambiente Windows
+```js
+{
+  "files.eol": "\n",
+  "editor.tabSize": 2
+}
+```
+</details>
+
+<details>
+  <summary><b>Nestjs</b> (click to show)</summary>
 
 Nestjs adota extensivamente conceitos como a **Injeção de Dependência** e a **Inversão de Controle**. `Providers` é um dos principais conceitos dentro do framework, que são basicamente classes anotadas que podem se comportar de diferentes formas (services, repositories, factories, helpers, ...).
 
@@ -212,8 +231,42 @@ Nest faz uso da [estrutura de módulos](https://docs.nestjs.com/modules) para or
 
 Este projeto está configurado para trabalhar com a estrutura de módulos e um módulo `root` pode ser encontrado dentro da pasta `src` como exemplo.
 
-## Outros Links: <a name="outros-links"></a>
+### Outros Links:
   - [Providers (Nest)](https://docs.nestjs.com/providers)
   - [Circular Dependency (Nest)](https://docs.nestjs.com/fundamentals/circular-dependency)
   - [Dependency Injection & Inversion of Control (Nest)](https://docs.nestjs.com/fundamentals/custom-providers)
   - [Dependency Inversion Principle (Wikipedia)](https://en.wikipedia.org/wiki/Dependency_inversion_principle)
+</details>
+
+## Sobre o projeto <a name="about"></a>
+
+### **Requisitos:**
+
+- [NodeJs ``>17.0.0``](https://nodejs.org/en/)
+
+- [Docker Descktop](https://docs.docker.com/desktop/mac/install/)
+
+- [Yarn](https://classic.yarnpkg.com/en/docs/install/#mac-stable)
+
+### **Instalação:** <a name="install"></a>
+```
+yarn
+```
+
+### **Tests:** <a name="tests"></a>
+```shell
+yarn test:ci && yarn test:e2e
+```
+### **Rodando o Projeto:** <a name="run"></a>
+
+Para subir o docker do projeto rode:
+```bash
+docker-compose up
+```
+Na linha de comando faça:
+```bash
+yarn start:dev
+```
+__NOTA__: caso tenha dúvidas veja a sessão `Configurações > Dotenv` & `Configurações > Scripts`
+
+### **Test API:** <a name="api"></a>

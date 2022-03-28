@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios';
 import { catchError, map, Observable } from 'rxjs';
 import { CONVERSION_API_URL_BCB } from '~/app.vars';
 import { getEnumByValue, Locale } from '~/bcb/enums';
-import { BcbApiException } from '~/bcb/exceptions';
+import { BcbApiUnexpectedError } from '~/bcb/exceptions';
 import { ConversionResponse, GetConversionParams } from '~/bcb/types';
 
 type BcbResponseApi = {
@@ -33,8 +33,8 @@ export class BcbService {
           price: value ?? 0
         };
       }),
-      catchError(() => {
-        throw new BcbApiException();
+      catchError(error => {
+        throw new BcbApiUnexpectedError(error.message);
       })
     );
   }
